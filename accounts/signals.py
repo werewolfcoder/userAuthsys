@@ -19,6 +19,6 @@ def set_default_role(sender, instance, created, **kwargs):
     Superusers created via ``createsuperuser`` are automatically
     assigned the ADMIN role if no role has been set.
     """
-    if created and instance.is_superuser and not instance.role:
+    if created and instance.is_superuser and instance.role != User.Role.ADMIN:
         instance.role = User.Role.ADMIN
         instance.save(update_fields=['role'])
