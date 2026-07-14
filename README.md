@@ -15,7 +15,7 @@ This project implements a role-based authentication system:
 
 - **Admin** users can log in via `/admin-login/` and access `/admin-dashboard/`. Admins are created via the Django admin panel or `createsuperuser` — they cannot register from the frontend.
 - **Distributor** users can register at `/register/`, log in via `/distributor-login/`, and access `/distributor-dashboard/`.
-- Password recovery uses a 6-digit OTP sent via Django's console email backend. The OTP expires after 5 minutes and is one-time use.
+- Password recovery uses a 6-digit OTP sent via SMTP email. The OTP expires after 5 minutes and is one-time use.
 
 ## Installation
 
@@ -83,11 +83,30 @@ Visit `http://127.0.0.1:8000/` in your browser.
 
 ## OTP Testing
 
-The project uses Django's **console email backend**, meaning OTP emails are printed to the terminal where the server is running — no real email credentials are needed.
+The project uses an SMTP email backend to send OTP emails to the user's inbox.
+
+### Email Setup
+
+1. Configure your SMTP credentials in the `.env` file (copy from `.env.example`):
+
+```
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-app-password
+EMAIL_FROM=your-email@gmail.com
+```
+
+2. For Gmail, generate an **App Password** at https://myaccount.google.com/apppasswords (regular passwords won't work).
+
+3. Restart the server after updating `.env`.
+
+### OTP Flow
 
 1. Go to `/forgot-password/`.
 2. Enter a registered email address.
-3. Check the server terminal console for the OTP email.
+3. Check the email inbox for the OTP message.
 4. Enter the 6-digit OTP on the verify page.
 5. If the OTP is correct and not expired (5 minutes), you will be redirected to set a new password.
 

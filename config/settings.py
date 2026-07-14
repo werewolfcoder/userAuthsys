@@ -159,15 +159,18 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
-# Email backend - Console backend for development
-# Emails are printed to the console instead of being sent via SMTP.
-# This is used for OTP delivery during password recovery.
-# https://docs.djangoproject.com/en/5.1/topics/email/#console-backend
+# Email backend - SMTP backend for sending real emails
+# Configure EMAIL_HOST_USER and EMAIL_HOST_PASSWORD in your .env file.
+# For Gmail, use an App Password (not your regular password).
+# https://docs.djangoproject.com/en/5.1/topics/email/#smtp-backend
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 1025
-EMAIL_FROM = os.environ.get('EMAIL_FROM', 'noreply@authsetup.com')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_FROM = os.environ.get('EMAIL_FROM', os.environ.get('EMAIL_HOST_USER', 'noreply@authsetup.com'))
 
 
 # Login / Logout redirect URLs
